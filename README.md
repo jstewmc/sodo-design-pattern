@@ -58,7 +58,7 @@ A service object is an action (e.g., create-user, confirm-user, archive-user, et
 * A service object MAY define concrete implementations of its interfaces to use as defaults.
 * A service object SHOULD be defined in a service manager.
 * A service object SHOULD NOT accept its own service manager as a dependency (9).
-* A service object MUST NOT expose more than one public, instance method (10).
+* A service object SHOULD NOT expose more than one public, instance method (10, 13).
 * A service object MUST NOT expose public properties. 
 * A service object MAY have unlimited private methods and properties (11).
 * A service object MAY be defined in a separate repository (6).
@@ -90,10 +90,10 @@ Additional notes about some specifications:
 7. Like a data object's data, a service object's dependencies can be divided into _required dependencies_ and _optional dependencies_. A _required dependency_ is a service or configuration option without which a service cannot perform its function.
 8. A constructor with more than three arguments is an indication that the service is doing too much and should be broken into smaller nested services.
 9. When a service defined in a service manager accepts the same service manager as a dependecy, a circular reference is created. Some languages have difficultly de-referencing circular references and freeing memory. In short-running processes like responding to an HTTP request, this is not a problem. However, in long-running processes such as message workers or large test suites, this can quickly become a memory (and performance) problem. 
-10. Ideally, this method allows the service object to be treated as a function such as PHP's magic `__invoke()` method or Ruby's conventional `call()` method. The method's arguments should be invocation-level arguments. Any argument that can be used on multiple invocations should be constructor-injected instead.
+10. Ideally, the service exposes a single public method that allows it to be treated as a function such as PHP's magic `__invoke()` method or Ruby's conventional `call()` method. The method's arguments should be invocation-level arguments. Any argument that can be used on multiple invocations should be constructor-injected instead.
 11. An abundance of private methods and properties is an indication the service is doing too much and should be broken into small nested services. Remember, a service does _one_ thing and it does it well. If a service's _one_ thing involves mutliple smaller things, you might want to create separate services for each smaller thing.
 12. In English, I recommend using hyphens to separate the service's name when used in discussion (e.g., "the parse-foo service"). In code, use your language's standard class naming convention (e.g., in PHP, `class ParseFoo`; or, in Ruby,  `class ParseFoo`, etc).
-
+13. If the service does expose multiple public methods, each method should perform a small variation of the service's main function, not something new. For (a self-centered) example, my [detect-environment](https://github.com/jstewmc/detect-environment) service detects the application's environment, and it exposes multiple public methods like `isDevelopment()` and `isProduction()` to make it easier for developers to check the current environment. All the public methods are variations of the same theme, detecting the application's environment.
 
 ## Version 
 
